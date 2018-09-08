@@ -38,7 +38,9 @@ GIF created with [LiceCap](http://www.cockos.com/licecap/).
     limitations under the License.
     
     
-    # Lab 2 - *Tumblr*
+   
+   
+# Lab 2 - *Tumblr*
 
 **Tumblr** is a photo browsing app app using the [The Tumblr API](https://www.tumblr.com/docs/en/api/v2#posts).
 
