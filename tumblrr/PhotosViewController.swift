@@ -14,6 +14,7 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
     
     @IBOutlet weak var tableView: UITableView!
     var posts: [[String: Any]] = []
+   
     
     
     
@@ -40,6 +41,7 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
             // 4.
             let url = URL(string: urlString)
              cell.imageCellView.af_setImage(withURL: url!)
+           
         }
        
          return cell
@@ -53,7 +55,13 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
         let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
         session.configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         let task = session.dataTask(with: url) { (data, response, error) in
-            if let error = error {
+           
+                if let error = error {
+                    let errorAlertController = UIAlertController(title: "Cannot Get Movies", message: "The Internet connections appears to be offline.", preferredStyle: .alert)
+                    let cancelAction = UIAlertAction(title: "Retry", style: .cancel)
+                    errorAlertController.addAction(cancelAction)
+                    self.present(errorAlertController, animated: true)
+
                 print(error.localizedDescription)
             } else if let data = data,
                 let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] {
@@ -68,6 +76,30 @@ class PhotosViewController: UIViewController, UITableViewDataSource, UITableView
         }
         task.resume()
 
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let vc = segue.destination as! PhotoDetailsViewController
+        let cell = sender as! UITableViewCell
+        let indexPath = tableView.indexPath(for: cell)!
+        let post = posts[indexPath.row]
+        if let photos = post["photos"] as? [[String: Any]] {
+            let photo = photos[0]
+            // 2.
+            let originalSize = photo["original_size"] as! [String: Any]
+            // 3.
+            let urlString = originalSize["url"] as! String
+            // 4.
+            let url = URL(string: urlString)
+            vc.urlDetail = url
+        }
+        
+        
+        
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     
